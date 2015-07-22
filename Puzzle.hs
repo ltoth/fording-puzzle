@@ -54,8 +54,21 @@ solution = path <$> find (\(N (World _ _ f _) _ _) ->
 
 minSolution = minimumBy (compare `on` length) solutions
 
-solutions = foldr (\(N (World _ _ f _) _ p) acc ->
-              if f == Set.fromList allPeople then p:acc else acc) [] tree
+--solutions = foldr (\(N (World _ _ f _) _ p) acc ->
+--              if f == Set.fromList allPeople then p:acc else acc) [] tree
+
+solutions = fst $ foldr (\(N (World _ _ f _) _ p) (acc, min) ->
+                if f == Set.fromList allPeople && length p < min
+                  then (p:acc, length p)
+                  else (acc, min))
+              ([], maxBound) tree
+
+maxLength = 71
+
+bSolution = head $ foldr (\(N (World _ _ f _) _ p) acc ->
+                if f == Set.fromList allPeople && length p <= maxLength
+                  then p:acc else acc)
+              [] tree
 
 initialNode = N initialWorld (Set.singleton initialWorld) [initialWorld]
 
